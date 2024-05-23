@@ -32,7 +32,7 @@ JOIN product_family f ON p.id_product_family = f.id_product_family;
 -- Sélectionner toutes les adresses d'un utilisateur donné
 SELECT u.id_user, u.email, a.zip_code, a.city, a.number, a.street, c.name AS country, t.label AS address_type 
 FROM app_user u
-JOIN user_adress ua ON u.id_user = ua.id_user
+JOIN user_address ua ON u.id_user = ua.id_user
 JOIN address a ON ua.id_address = a.id_address
 JOIN country c ON a.id_country = c.id_country
 JOIN address_type t ON a.id_type = t.id_type

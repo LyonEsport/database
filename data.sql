@@ -4,7 +4,7 @@ INSERT INTO address (zip_code, city, number, street, id_country, id_type) VALUES
 -- Ajoutez d'autres adresses uniques pour chaque utilisateur...
 
 -- Lier les utilisateurs et les adresses
-INSERT INTO user_adress (id_user, id_address) VALUES 
+INSERT INTO user_address (id_user, id_address) VALUES 
 (1, 1),
 (2, 2);
 -- Ajoutez les relations pour les autres utilisateurs...

@@ -94,7 +94,7 @@ CREATE TABLE stock(
    FOREIGN KEY(id_stock_type) REFERENCES stock_type(id_stock_type)
 );
 
-CREATE TABLE user_adress(
+CREATE TABLE user_address(
    id_user INT,
    id_address INT,
    PRIMARY KEY(id_user, id_address),
