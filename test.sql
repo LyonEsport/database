@@ -37,3 +37,44 @@ JOIN address a ON ua.id_address = a.id_address
 JOIN country c ON a.id_country = c.id_country
 JOIN address_type t ON a.id_type = t.id_type
 WHERE u.id_user = 1;
+
+-- SIMULER UN ACHAT
+
+-- Sélectionner un utilisateur aléatoire pour effectuer un achat
+SET @selected_user := (SELECT id_user FROM app_user WHERE id_user = 1);
+
+-- Sélectionner un produit aléatoire pour l'achat
+SET @selected_product := (SELECT id_product FROM product WHERE id_product = 4);
+SET @product_sale_price := (SELECT sale_price FROM product WHERE id_product = @selected_product);
+
+-- Insérer la commande pour cet achat
+INSERT INTO line_order (id_user, id_product, id_bill, quantity)
+VALUES (@selected_user, @selected_product, 2, 1);
+
+-- Sélectionner une adresse de livraison aléatoire pour l'utilisateur
+SET @selected_address := (SELECT ua.id_address
+                          FROM user_address ua
+                          JOIN address a ON ua.id_address = a.id_address
+                          WHERE ua.id_user = @selected_user AND a.id_type = 1);
+
+
+
+-- Mettre à jour la quantité en stock du produit
+UPDATE stock
+SET quantity = quantity - 1
+WHERE id_stock = (SELECT id_stock FROM product_stock WHERE id_product = @selected_product);
+
+-- Mettre à jour le montant total de la facture
+UPDATE bill
+SET fee = fee + @product_sale_price, is_payed = false
+WHERE id_bill = (SELECT id_bill FROM line_order WHERE id_user = @selected_user AND id_product = @selected_product);
+
+-- Sélectionner les détails de l'achat effectué
+SELECT
+    (SELECT email FROM app_user WHERE id_user = @selected_user) AS user_email,
+    (SELECT name FROM product WHERE id_product = @selected_product) AS product_name,
+    (SELECT zip_code FROM address WHERE id_address = @selected_address) AS zip_code,
+    (SELECT city FROM address WHERE id_address = @selected_address) AS city,
+    (SELECT number FROM address WHERE id_address = @selected_address) AS number,
+    (SELECT street FROM address WHERE id_address = @selected_address) AS street,
+    (SELECT fee FROM bill WHERE id_bill = (SELECT id_bill FROM line_order WHERE id_user = @selected_user AND id_product = @selected_product)) AS total_amount;
